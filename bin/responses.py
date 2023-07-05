@@ -32,6 +32,20 @@ def process_help():
             \"!calctotal will give you the total amount of reported earnings to date.\"\n\
             \"!calcmetrics will give some cursory information on earnings, more features to come.\"\n"
 
+def process_total(server_name, channel):
+    try:
+        result = database.dbTotal(server_name, channel)
+    except Exception as e:
+        print(e)
+    return result
+
+def process_total_month(server_name, channel):
+    try:
+        result = database.dbTotalByDay(server_name, channel)
+    except Exception as e:
+        print(e)
+    return result    
+
 def get_response(message:str, dicsMsg, username, channel, server_name):
     p_message = message.lower()
 
@@ -40,11 +54,13 @@ def get_response(message:str, dicsMsg, username, channel, server_name):
     # Validations
     if (len(p_message) < 3 and p_message[0] == deets.DICT_COMMANDS[0]):
         return deets.INCORRECT_LENGTH
-    elif (not test_conversion(p_message)):
-        return deets.INCORRECT_PARAM
     
     if (p_message[0] == deets.DICT_COMMANDS[0]):
         return process_calc(p_message, dicsMsg, username, channel, server_name)
     elif(p_message[0] == deets.DICT_COMMANDS[1]):
         return process_help()
-  
+    elif(p_message[0] == deets.DICT_COMMANDS[2]):
+        if (len(p_message) == 1):
+            return process_total(server_name, channel)
+        elif (p_message[1].lower() == "month"):
+            return process_total_month(server_name, channel)

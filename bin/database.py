@@ -17,10 +17,31 @@ def dbInsert(serverName, reportingUser, channel, value, reportedDate):
             "serverName": str(serverName),
             "reportingUser": str(reportingUser),
             "channel": str(channel),
-            "value": str(value),
+            "value": int(value),
             "reportedDate": str(reportedDate)
         }
         col.insert_one(earningsDoc)
+    except Exception as e:
+        print(e)
+
+def dbTotalByDay(serverName, channel):
+    uri = f'mongodb+srv://{secrets.MONGO_USER}:{secrets.MONGO_PASSWORD}@restodb.xuue7kr.mongodb.net/?retryWrites=true&w=majority'
+    # Create a new client and connect to the server
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    # Send a ping to confirm a successful connection
+    db = client.MyGamingDB
+    col = db.MyGamingDB
+    
+    try:
+        result = ""
+        client.admin.command('ping')
+        print("Pinged your deployment. You successfully connected to MongoDB!")
+        agg = col.aggregate([{"$group": {"_id": {"serverName" : serverName, "channel": channel, "reportedDate" : "$reportedDate"},
+                                         "total" : {"$sum" : "$value"}}}])
+        for item in agg:
+            result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", on the date of " + item['_id']['reportedDate'] \
+                  + " has total earnings of " + str(item['total']) + " gil.\n")
+        return result
     except Exception as e:
         print(e)
 
@@ -31,9 +52,16 @@ def dbTotal(serverName, channel):
     # Send a ping to confirm a successful connection
     db = client.MyGamingDB
     col = db.MyGamingDB
-
+    
     try:
+        result = ""
         client.admin.command('ping')
         print("Pinged your deployment. You successfully connected to MongoDB!")
+        agg = col.aggregate([{"$group": {"_id": {"serverName" : serverName, "channel": channel},
+                                         "total" : {"$sum" : "$value"}}}])
+        for item in agg:
+            result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] \
+                  + " has total earnings of " + str(item['total']) + " gil.\n")
+        return result
     except Exception as e:
         print(e)
