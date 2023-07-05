@@ -9,20 +9,11 @@ def test_conversion(p_message:list):
             return False 
     
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
 
-def get_response(message:str, dicsMsg, username, channel, server_name):
-    p_message = message.lower()
-
-    p_message = p_message.split(' ')
-
-    # Validations
-    if (len(p_message) != 4 and p_message[0] == deets.DICT_COMMANDS[0]):
-        return deets.INCORRECT_LENGTH
-    elif (not test_conversion(p_message)):
-        return deets.INCORRECT_PARAM
-    
+def process_calc(p_message, dicsMsg, username, channel, server_name):
     #Data Processing & DB query
     dateInt = p_message[1]
     amount = int(p_message[2])
@@ -35,4 +26,25 @@ def get_response(message:str, dicsMsg, username, channel, server_name):
     #TODO: REMOVE TEMP TEST OUTPUT (or make concise as a confirmation output)
     return f'The amount made on {date} was {amount} gil. This figure was reported by {username} on the channel {channel} on the server {server_name}.'
     
+def process_help():
+    return "There are currently four commands available for use! Examples for formatting are as follows. \n\"!calc 20101225 6969\" adds an entry\
+          to 2010 DECEMBER 25 for the amount of 6969 gil earned.\n \"!help will give you this prompt again.\"\n\
+            \"!calctotal will give you the total amount of reported earnings to date.\"\n\
+            \"!calcmetrics will give some cursory information on earnings, more features to come.\"\n"
+
+def get_response(message:str, dicsMsg, username, channel, server_name):
+    p_message = message.lower()
+
+    p_message = p_message.split(' ')
+
+    # Validations
+    if (len(p_message) < 3 and p_message[0] == deets.DICT_COMMANDS[0]):
+        return deets.INCORRECT_LENGTH
+    elif (not test_conversion(p_message)):
+        return deets.INCORRECT_PARAM
+    
+    if (p_message[0] == deets.DICT_COMMANDS[0]):
+        return process_calc(p_message, dicsMsg, username, channel, server_name)
+    elif(p_message[0] == deets.DICT_COMMANDS[1]):
+        return process_help()
   
