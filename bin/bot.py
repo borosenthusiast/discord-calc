@@ -1,7 +1,7 @@
 import discord
 import responses
 import deets
-import secrets
+import secrets_bot
 
 async def send_message(message, user_message, username, channel, server_name):
     try:
@@ -30,4 +30,4 @@ def run_discord_bot():
         channel = str(message.channel)
         server_name = str(message.guild.name)
         await send_message(message, user_message, username, channel, server_name)
-    client.run(token=secrets.TOKEN)
+    client.run(token=secrets_bot.TOKEN)
