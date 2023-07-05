@@ -17,7 +17,7 @@ def process_calc(p_message, dicsMsg, username, channel, server_name):
     #Data Processing & DB query
     dateInt = p_message[1]
     amount = int(p_message[2])
-    date = datetime.strptime(dateInt, '%Y%m%d').strftime('%m/%d/%Y')
+    date = datetime.strptime(dateInt, '%Y%m%d')
     #TODO: DB INSERT
     try:
         database.dbInsert(server_name, username, channel, amount, date)
@@ -62,5 +62,5 @@ def get_response(message:str, dicsMsg, username, channel, server_name):
     elif(p_message[0] == deets.DICT_COMMANDS[2]):
         if (len(p_message) == 1):
             return process_total(server_name, channel)
-        elif (p_message[1].lower() == "month"):
+        elif (p_message[1].lower() == deets.SUBCOMMAND_DAY):
             return process_total_month(server_name, channel)
