@@ -17,14 +17,28 @@ def test_conversion(p_message:list):
 def process_calc(p_message, dicsMsg, username, channel, server_name):
     #Data Processing & DB query
     dateInt = p_message[1]
-    amount = int(p_message[2])
-    date = datetime.strptime(dateInt, '%Y%m%d')
+    try:
+        amount = int(p_message[2])
+    except ValueError:
+        return "Please enter a whole number as the input for the amount earned."
+    try:
+        date = datetime.strptime(dateInt, '%Y%m%d')
+    except ValueError:
+        return "Invalid date format - enter the date as YYYYMMDD\nExample: 20140506."
+    if (len(p_message) == 4): #has comment
+        comment = str(p_message[3])
+    else:
+        comment = ""
 
     try:
-        database.dbInsert(server_name, username, channel, amount, date)
+        database.dbInsert(server_name, username, channel, amount, date, comment)
     except Exception as e:
         print(e)
-    return f'The amount made on {date} was {amount} gil. This figure was reported by {username} on the channel {channel} on the server {server_name}.'
+    if (comment == ""):
+        return f'The amount made on {date.date()} was {amount} gil. This figure was reported by {username} on the channel {channel} on the server {server_name}.'
+    else:
+        return f'The amount made on {date.date()} was {amount} gil. This figure was reported by {username} on the channel {channel} on the server {server_name}. \
+             \nA comment has been made on the record, {comment}'
     
 def process_help():
     return "There are currently four commands available for use! Examples for formatting are as follows. \n\"!calc YYYYMMDD AMOUNT\" adds an entry\

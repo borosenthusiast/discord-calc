@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 import io
 
-def dbInsert(serverName, reportingUser, channel, value, reportedDate):
+def dbInsert(serverName, reportingUser, channel, value, reportedDate, comment):
     uri = f'mongodb+srv://{secrets_bot.MONGO_USER}:{secrets_bot.MONGO_PASSWORD}@restodb.xuue7kr.mongodb.net/?retryWrites=true&w=majority'
     # Create a new client and connect to the server
     client = MongoClient(uri, server_api=ServerApi('1'))
@@ -21,7 +21,8 @@ def dbInsert(serverName, reportingUser, channel, value, reportedDate):
             "reportingUser": str(reportingUser),
             "channel": str(channel),
             "value": int(value),
-            "reportedDate": reportedDate
+            "reportedDate": reportedDate,
+            "comment": comment
         }
         col.insert_one(earningsDoc)
     except Exception as e:
@@ -117,11 +118,13 @@ def dbHighestDay(serverName, channel):
                     "reportedDate": "$reportedDate"
                 },
                 "total": {"$max": "$value"}
-            }}
+            }},
+            {"$sort": {"total": -1}},
+            {"$limit": 1}
         ])
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", the date of " + item['_id']['reportedDate'].strftime("%B %d, %Y") \
-                  + " has the highest earnings of " + str(item['total']) + " gil.\n")
+                  + " has the all-time highest earnings of " + str(item['total']) + " gil.\n")
         return result
     except Exception as e:
         print(e)
@@ -151,11 +154,13 @@ def dbLowestDay(serverName, channel):
                     "reportedDate": "$reportedDate"
                 },
                 "total": {"$min": "$value"}
-            }}
+            }},
+            {"$sort": {"total": 1}},
+            {"$limit": 1}
         ])
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", the date of " + item['_id']['reportedDate'].strftime("%B %d, %Y") \
-                  + " has the lowest earnings of " + str(item['total']) + " gil.\n")
+                  + " has the all-time lowest earnings of " + str(item['total']) + " gil.\n")
         return result
     except Exception as e:
         print(e)
@@ -183,15 +188,18 @@ def dbBestDaysOfWeek(serverName, channel):
                 "_id": {
                     "serverName": "$serverName",
                     "channel": "$channel",
-                    "weekday": {"$dayOfWeek": "$reportedDate"}
+                    "weekday": {"$subtract": [{"$dayOfWeek": "$reportedDate"}, 1]}
                 },
                 "total": {"$avg": "$value"}
-            }}
+            }},
+            {"$sort": {"_id.weekday": 1}}
         ])
+        weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+        result = ""
         for item in agg:
-            weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", " \
-                      + weekday[item['_id']['weekday'] - 1] + " has average earnings of " + str(item['total']) + " gil.\n")
+                    + weekday[item['_id']['weekday']] + " has an average earnings of " + str(item['total']) + " gil.\n")
+
         return result
     except Exception as e:
         print(e)
