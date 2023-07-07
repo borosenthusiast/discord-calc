@@ -89,3 +89,6 @@ def dbTotal(serverName, channel):
         return result
     except Exception as e:
         print(e)
+
+def dbMetrics(serverName, channel):
+    return "TODO."
