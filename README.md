@@ -8,3 +8,5 @@ Basic Discord bot made to calculate and provide metrics on virtual venue sales r
 !calctotal => Provides the sum of total earnings to date.
 
 !calcmetrics => Parameters for !calcmetric are a single option from the list that follows: daybest, best, worst. Provides metrics for average earnings for each day of the week, the best earning day to date, and the worst earning day to date.
+
+!calcexport => Exports current earnings from DB into a csv file. Requires specific privileges.
