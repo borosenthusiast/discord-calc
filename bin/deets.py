@@ -8,3 +8,4 @@ SUBCOMMAND_WORST_DAY = "worst"
 SUBCOMMAND_BEST_DAY = "best"
 METRICS_HELP = "Parameters for !calcmetric are a single option from the list that follows: daybest, best, worst."
 DICT_CHANNEL_IDS = ["earnings-report", "test"]
+PRIVATE = 'private'

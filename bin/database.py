@@ -217,12 +217,10 @@ def dbExport(serverName, channel):
         client.admin.command('ping')
         print("Pinged your deployment. You successfully connected to MongoDB!")
         agg = col.find({"serverName" : serverName, "channel": channel})
-        df = pd.DateFrame(agg)
+        df = pd.DataFrame(agg)
         csv_data = df.to_csv(index=False)
         # Create a file-like object
         csv_file = io.StringIO(csv_data)
-        # Create a Discord attachment object, TODO: Move the discord.File function call to the appropriate function
-       # attachment = discord.File(csv_file, filename='data.csv')
-        return ""
+        return csv_file
     except Exception as e:
-        print(e)
+        print("dbExport " + str(e))

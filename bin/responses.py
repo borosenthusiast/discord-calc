@@ -88,11 +88,16 @@ def process_worst_day(server_name, channel):
         print(e)
     return result
 
+def process_export(server_name, channel):
+    try:
+        result = database.dbExport(server_name, channel)
+    except Exception as e:
+        print(e)
+    return result    
+
 def get_response(message:str, dicsMsg, username, channel, server_name):
     p_message = message.lower()
-
     p_message = p_message.split(' ')
-
     # Validations
     if (len(p_message) < 3 and p_message[0] == deets.DICT_COMMANDS[0]):
         return deets.INCORRECT_LENGTH
@@ -118,5 +123,6 @@ def get_response(message:str, dicsMsg, username, channel, server_name):
                 return deets.METRICS_HELP
         else:
             return deets.METRICS_HELP
-
+    elif(p_message[0] == deets.DICT_COMMANDS[4]):
+        return process_export(server_name, channel)
 
