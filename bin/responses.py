@@ -20,7 +20,7 @@ def process_calc(p_message, dicsMsg, username, channel, server_name):
     try:
         amount = int(p_message[2])
     except ValueError:
-        return "Please enter a whole number as the input for the amount earned."
+        return "Please enter a whole number greater than 0 as the input for the amount earned."
     try:
         date = datetime.strptime(dateInt, '%Y%m%d')
     except ValueError:
@@ -29,6 +29,9 @@ def process_calc(p_message, dicsMsg, username, channel, server_name):
         comment = str(p_message[3])
     else:
         comment = ""
+
+    if (amount < 0):
+        return "Please enter a whole number greater than 0 as the input for the amount earned."
 
     try:
         database.dbInsert(server_name, username, channel, amount, date, comment)

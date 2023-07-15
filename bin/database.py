@@ -57,7 +57,7 @@ def dbTotalByDay(serverName, channel):
         ])
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", on the date of " + item['_id']['reportedDate'].strftime("%B %d, %Y") \
-                  + " has total earnings of " + str(item['total']) + " gil.\n")
+                  + " has total earnings of " + "{:.2f}".format(item['total']) + " gil.\n")
         return result
     except Exception as e:
         print(e)
@@ -88,7 +88,7 @@ def dbTotal(serverName, channel):
 
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] \
-                  + " has total earnings of " + str(item['total']) + " gil.\n")
+                  + " has total earnings of " + "{:.2f}".format(item['total']) + " gil.\n")
         return result
     except Exception as e:
         print(e)
@@ -124,7 +124,7 @@ def dbHighestDay(serverName, channel):
         ])
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", the date of " + item['_id']['reportedDate'].strftime("%B %d, %Y") \
-                  + " has the all-time highest earnings of " + str(item['total']) + " gil.\n")
+                  + " has the all-time highest earnings of " + "{:.2f}".format(item['total']) + " gil.\n")
         return result
     except Exception as e:
         print(e)
@@ -160,7 +160,7 @@ def dbLowestDay(serverName, channel):
         ])
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", the date of " + item['_id']['reportedDate'].strftime("%B %d, %Y") \
-                  + " has the all-time lowest earnings of " + str(item['total']) + " gil.\n")
+                  + " has the all-time lowest earnings of " + "{:.2f}".format(item['total']) + " gil.\n")
         return result
     except Exception as e:
         print(e)
@@ -198,7 +198,7 @@ def dbBestDaysOfWeek(serverName, channel):
         result = ""
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", " \
-                    + weekday[item['_id']['weekday']] + " has an average earnings of " + str(item['total']) + " gil.\n")
+                    + weekday[item['_id']['weekday']] + " has an average earnings of " + "{:.2f}".format(item['total']) + " gil.\n")
 
         return result
     except Exception as e:
