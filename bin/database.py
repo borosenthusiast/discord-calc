@@ -2,6 +2,7 @@ import secrets_bot
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from datetime import datetime
+from return_type import return_type
 import pandas as pd
 import io
 
@@ -174,7 +175,7 @@ def dbBestDaysOfWeek(serverName, channel):
     # Send a ping to confirm a successful connection
     db = client.MyGamingDB
     col = db.MyGamingDB
-    
+
     try:
         result = ""
         client.admin.command('ping')
@@ -196,11 +197,18 @@ def dbBestDaysOfWeek(serverName, channel):
         ])
         weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         result = ""
+        df = []
         for item in agg:
             result += ("For " + item['_id']['serverName'] + ": " + item['_id']['channel'] + ", " \
-                    + weekday[item['_id']['weekday']] + " has an average earnings of " + "{:.2f}".format(item['total']) + " gil.\n")
-
-        return result
+                    + weekday[item['_id']['weekday']] + " has average earnings of " + "{:.2f}".format(item['total']) + " gil.\n")
+            df.append({
+                "Server Name": item['_id']['serverName'],
+                "Channel": item['_id']['channel'],
+                "Weekday": weekday[item['_id']['weekday']],
+                "Average Earnings": item['total']
+            })
+        df = pd.DataFrame(df)
+        return return_type(result, return_type.TEXT, data=df)
     except Exception as e:
         print(e)
 
